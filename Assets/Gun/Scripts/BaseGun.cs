@@ -8,8 +8,15 @@ public class BaseGun : MonoBehaviour {
     [SerializeField] protected GunControllerSO gunControllerSO;
 
     [SerializeField] protected Transform barrelEndPoint;
-    [SerializeField] protected Transform defaultScopePosition;
-    [SerializeField] protected Transform attachedScopePosition;
+    // [SerializeField] protected Transform defaultScopePosition;
+    // [SerializeField] protected Transform attachedScopePosition;
+
+    [SerializeField] protected List<ShootingMode> shootingModesAvailable;
+    protected enum ShootingMode {
+        Auto,
+        Single,
+        Burst,
+    }
 
 
     protected int fireRate;
@@ -32,8 +39,8 @@ public class BaseGun : MonoBehaviour {
         gunControllerSO.ClipAmmoChanged(clipAmmo);
         gunControllerSO.ClipSizeSet(clipSize);
 
-        gunControllerSO.DefaultScopePositionSet(defaultScopePosition.position);
-        gunControllerSO.ScopeMountPositionSet(attachedScopePosition.position);
+        // gunControllerSO.DefaultScopePositionSet(defaultScopePosition.position);
+        // gunControllerSO.ScopeMountPositionSet(attachedScopePosition.position);
     }
 
     private void Update() {
