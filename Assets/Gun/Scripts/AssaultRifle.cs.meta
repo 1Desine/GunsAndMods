@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 3d72678f208117949844f2c4d0255421
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - gunControllerSO: {fileID: 11400000, guid: 04fff56e1ff793a409649cebe688e5fb, type: 2}
+  - barrelEndPoint: {instanceID: 0}
+  - defaultScopePosition: {instanceID: 0}
+  - attachedScopePosition: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
