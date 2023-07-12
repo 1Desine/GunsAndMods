@@ -11,44 +11,54 @@ public class BaseGun : MonoBehaviour {
     [SerializeField] protected Transform defaultScopePosition;
     [SerializeField] protected Transform attachedScopePosition;
 
+
+
+    // Firing mode
+    private bool changeFiringMode;
     protected int shootingModeSelected = 0;
-    protected List<ShootingMode> shootingModesList = new List<ShootingMode>();
-    protected class ShootingMode {
+    protected List<FiringMode> shootingModesList = new List<FiringMode>();
+    protected class FiringMode {
         public bool singleAction;
         public int amountOfShots;
         public float nextShotDelay;
     }
 
-
-    protected int fireRate = 300;
+    // Stats
+    protected int fireRate = 60;
     protected int clipSize;
 
     protected int clipAmmo;
     protected bool shellIsLoaded;
 
+    // Shooting
+    private bool shootTriggerIsPulled;
     protected float lastShotTime;
 
-    protected bool shootTriggerIsPulled;
+    // Reload
+    private bool reloadButtonIsPushedIn;
 
 
-    private void Awake() {
-        shootingModesList.Add(new ShootingMode() {
-            singleAction = true,
-            amountOfShots = 3,
-            nextShotDelay = 60f / fireRate,
-        });
-        Debug.Log(shootingModesList[0].singleAction);
-        Debug.Log(shootingModesList[0].amountOfShots);
-        Debug.Log(shootingModesList[0].nextShotDelay);
-    }
 
     private void OnEnable() {
         SetValuesInGunController();
     }
 
+
+    private void Update() {
+        ManageShooting(gunControllerSO.shootButtonDown);
+
+        ManageReloading(gunControllerSO.reloadButtonDown);
+
+        ManageFireModeChanging(gunControllerSO.changeFiringMode);
+    }
+
+
+
+
     private void SetValuesInGunController() {
         gunControllerSO.shootButtonDown = false;
         gunControllerSO.reloadButtonDown = false;
+        gunControllerSO.changeFiringMode = false;
 
         gunControllerSO.ClipAmmoChanged(clipAmmo);
         gunControllerSO.ClipSizeSet(clipSize);
@@ -57,11 +67,6 @@ public class BaseGun : MonoBehaviour {
         gunControllerSO.ScopeMountPositionSet(attachedScopePosition.position);
     }
 
-    private void Update() {
-        ManageShooting(gunControllerSO.shootButtonDown);
-
-        if(gunControllerSO.reloadButtonDown) TryReload();
-    }
 
 
     private void ManageShooting(bool shootButtonDown) {
@@ -69,7 +74,7 @@ public class BaseGun : MonoBehaviour {
             shootTriggerIsPulled = false;
             return;
         }
-        ShootingMode mode = shootingModesList[shootingModeSelected];
+        FiringMode mode = shootingModesList[shootingModeSelected];
 
         bool canShoot = false;
         if(Time.time - lastShotTime > 60f / fireRate) { // Rate of fire allows to shoot another round
@@ -84,15 +89,8 @@ public class BaseGun : MonoBehaviour {
 
         shootTriggerIsPulled = shootButtonDown;
     }
-
-    private void TryReload() {
-        Reload();
-        gunControllerSO.ClipAmmoChanged(clipAmmo);
-    }
-
-
     private IEnumerator ShootingCoroutine(int amountOfShots, float nextShotDelay) {
-        Shoot();
+        if(CanShoot()) Shoot();
         lastShotTime = Time.time;
         ManageAmmoAfterShot();
         gunControllerSO.ClipAmmoChanged(clipAmmo);
@@ -105,10 +103,34 @@ public class BaseGun : MonoBehaviour {
     }
 
 
+    private void ManageFireModeChanging(bool changeFireMode) {
+        if(changeFireMode && this.changeFiringMode == false) {
+            shootingModeSelected++;
+            shootingModeSelected %= shootingModesList.Count;
+        }
+        this.changeFiringMode = changeFireMode;
+    }
+    protected void AddFireMod(bool singleAction, int amountOfShots = 1, float nextShotDelay = -1) {
+        shootingModesList.Add(new FiringMode() {
+            singleAction = singleAction,
+            amountOfShots = amountOfShots,
+            nextShotDelay = nextShotDelay == -1 ? 60f / fireRate : nextShotDelay, // if burst speed same as auto - leave as default
+        });
+    }
+
+
+    private void ManageReloading(bool reloadButtonDown) {
+        if(reloadButtonDown && this.reloadButtonIsPushedIn == false) {
+            Reload();
+            gunControllerSO.ClipAmmoChanged(clipAmmo);
+        }
+        this.reloadButtonIsPushedIn = reloadButtonDown;
+    }
+
 
     protected virtual bool CanShoot() {
-        Debug.LogError("BaseGun CanShoot() called");
-        return false;
+        Debug.LogError("BaseGun CanShoot() called - reterned true");
+        return true;
     }
     protected virtual void Shoot() {
         Debug.LogError("BaseGun Shoot() called");
@@ -122,10 +144,6 @@ public class BaseGun : MonoBehaviour {
     }
 
 
-    protected void SelectNextShootingMode() {
-        shootingModeSelected++;
-        shootingModeSelected %= shootingModesList.Count;
-    }
 
 
 

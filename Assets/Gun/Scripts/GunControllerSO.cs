@@ -10,6 +10,8 @@ public class GunControllerSO : ScriptableObject {
     public bool shootButtonDown;
     public bool reloadButtonDown;
 
+    public bool changeFiringMode;
+
 
     // Output for use
     public event Action<int> OnClipAmmoChanged;
@@ -18,6 +20,8 @@ public class GunControllerSO : ScriptableObject {
     public event Action<Vector3> OnDefaultScopePositionSet;
     public event Action<Vector3> OnScopeMountPositionSet;
 
+    public event Action OnFiringModeChanged;
+    
 
 
     public void ClipAmmoChanged(int clipAmmo) {
