@@ -11,24 +11,29 @@ public class GunTestUI : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI firaRateText;
     [SerializeField] private TextMeshProUGUI clipAmmoText;
     [SerializeField] private TextMeshProUGUI clipSizeText;
+    [SerializeField] private TextMeshProUGUI fireModText;
 
 
     private void OnEnable() {
-        gunControllerSO.OnClipAmmoChanged += GunControllerSO_OnClipAmmoChanged;
         gunControllerSO.OnClipSizeSet += GunControllerSO_OnClipSizeSet;
+        gunControllerSO.OnClipAmmoChanged += GunControllerSO_OnClipAmmoChanged;
+        gunControllerSO.OnFiringModeChanged += GunControllerSO_OnFiringModeChanged;
+        gunControllerSO.OnFireRateSet += GunControllerSO_OnFireRateSet;
     }
 
+    private void GunControllerSO_OnFireRateSet(int obj) {
+        firaRateText.text = obj.ToString();
+    }
     private void GunControllerSO_OnClipSizeSet(int obj) {
         clipAmmoText.text = obj.ToString();
     }
-
     private void GunControllerSO_OnClipAmmoChanged(int obj) {
         clipSizeText.text = obj.ToString();
     }
-
-    private void UpdateClipAmmoText() {
-        
+    private void GunControllerSO_OnFiringModeChanged(Gun.FireModNames obj) {
+        fireModText.text = obj.ToString();
     }
+
 
 
 

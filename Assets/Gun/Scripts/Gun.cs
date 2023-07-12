@@ -2,8 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Gun;
 
-public class BaseGun : MonoBehaviour {
+public class Gun : MonoBehaviour {
 
     [SerializeField] protected GunControllerSO gunControllerSO;
 
@@ -13,14 +14,20 @@ public class BaseGun : MonoBehaviour {
 
 
 
-    // Firing mode
+    // Fire mode
     private bool changeFiringMode;
     protected int shootingModeSelected = 0;
-    protected List<FiringMode> shootingModesList = new List<FiringMode>();
-    protected class FiringMode {
+    protected List<FireMode> shootingModesList = new List<FireMode>();
+    protected class FireMode {
+        public FireModNames fireMod;
         public bool singleAction;
         public int amountOfShots;
-        public float nextShotDelay;
+        public float burstFireRate;
+    }
+    public enum FireModNames {
+        Auto,
+        Single,
+        Burst,
     }
 
     // Stats
@@ -28,7 +35,7 @@ public class BaseGun : MonoBehaviour {
     protected int clipSize;
 
     protected int clipAmmo;
-    protected bool shellIsLoaded;
+    protected bool shellIsLoaded = true;
 
     // Shooting
     private bool shootTriggerIsPulled;
@@ -37,36 +44,33 @@ public class BaseGun : MonoBehaviour {
     // Reload
     private bool reloadButtonIsPushedIn;
 
-
-
-    private void OnEnable() {
-        SetValuesInGunController();
-    }
-
+    
 
     private void Update() {
         ManageShooting(gunControllerSO.shootButtonDown);
 
         ManageReloading(gunControllerSO.reloadButtonDown);
 
-        ManageFireModeChanging(gunControllerSO.changeFiringMode);
+        ManageFireModeChanging(gunControllerSO.changeFiringModeButtonDown);
     }
 
 
 
 
-    private void SetValuesInGunController() {
+    protected void SetValuesInGunController() {
         gunControllerSO.shootButtonDown = false;
         gunControllerSO.reloadButtonDown = false;
-        gunControllerSO.changeFiringMode = false;
+        gunControllerSO.changeFiringModeButtonDown = false;
 
+        gunControllerSO.FireRateSet(fireRate);
         gunControllerSO.ClipAmmoChanged(clipAmmo);
         gunControllerSO.ClipSizeSet(clipSize);
+        gunControllerSO.FireModeChanged(shootingModesList[shootingModeSelected].fireMod);
 
-        gunControllerSO.DefaultScopePositionSet(defaultScopePosition.position);
-        gunControllerSO.ScopeMountPositionSet(attachedScopePosition.position);
+
+        // gunControllerSO.DefaultScopePositionSet(defaultScopePosition.position);
+        // gunControllerSO.ScopeMountPositionSet(attachedScopePosition.position);
     }
-
 
 
     private void ManageShooting(bool shootButtonDown) {
@@ -74,7 +78,7 @@ public class BaseGun : MonoBehaviour {
             shootTriggerIsPulled = false;
             return;
         }
-        FiringMode mode = shootingModesList[shootingModeSelected];
+        FireMode mode = shootingModesList[shootingModeSelected];
 
         bool canShoot = false;
         if(Time.time - lastShotTime > 60f / fireRate) { // Rate of fire allows to shoot another round
@@ -84,12 +88,12 @@ public class BaseGun : MonoBehaviour {
             }
         }
         if(canShoot) {
-            StartCoroutine(ShootingCoroutine(mode.amountOfShots, mode.nextShotDelay));
+            StartCoroutine(ShootingCoroutine(mode.amountOfShots, mode.burstFireRate));
         }
 
         shootTriggerIsPulled = shootButtonDown;
     }
-    private IEnumerator ShootingCoroutine(int amountOfShots, float nextShotDelay) {
+    private IEnumerator ShootingCoroutine(int amountOfShots, float burstFireRate) {
         if(CanShoot()) Shoot();
         lastShotTime = Time.time;
         ManageAmmoAfterShot();
@@ -97,8 +101,8 @@ public class BaseGun : MonoBehaviour {
 
         amountOfShots--;
         if(amountOfShots > 0) {
-            yield return new WaitForSeconds(nextShotDelay);
-            StartCoroutine(ShootingCoroutine(amountOfShots, nextShotDelay));
+            yield return new WaitForSeconds(60f / burstFireRate);
+            StartCoroutine(ShootingCoroutine(amountOfShots, burstFireRate));
         }
     }
 
@@ -107,14 +111,16 @@ public class BaseGun : MonoBehaviour {
         if(changeFireMode && this.changeFiringMode == false) {
             shootingModeSelected++;
             shootingModeSelected %= shootingModesList.Count;
+            gunControllerSO.FireModeChanged(shootingModesList[shootingModeSelected].fireMod);
         }
         this.changeFiringMode = changeFireMode;
     }
-    protected void AddFireMod(bool singleAction, int amountOfShots = 1, float nextShotDelay = -1) {
-        shootingModesList.Add(new FiringMode() {
+    protected void AddFireMod(FireModNames fireMod, bool singleAction, int amountOfShots = 1, float burstFireRate = -1) {
+        shootingModesList.Add(new FireMode() {
+            fireMod = fireMod,
             singleAction = singleAction,
             amountOfShots = amountOfShots,
-            nextShotDelay = nextShotDelay == -1 ? 60f / fireRate : nextShotDelay, // if burst speed same as auto - leave as default
+            burstFireRate = burstFireRate == -1 ? 60f / fireRate : 60f / burstFireRate, // if burst speed same as auto - leave as default
         });
     }
 
@@ -134,6 +140,10 @@ public class BaseGun : MonoBehaviour {
     }
     protected virtual void Shoot() {
         Debug.LogError("BaseGun Shoot() called");
+
+        //if (Physics.Raycast(barrelEndPoint.position, barrelEndPoint.forward, out RaycastHit hit, shootDistance)) {
+        //    Debug.DrawRay(barrelEndPoint.position, barrelEndPoint.forward * (hit.point - barrelEndPoint.position).magnitude, Color.red, 0.05f);
+        //}
     }
     protected virtual void ManageAmmoAfterShot() {
         Debug.LogError("BaseGun ManageAmmoAfterShot() called");
