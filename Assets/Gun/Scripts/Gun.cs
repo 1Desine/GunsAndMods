@@ -15,8 +15,8 @@ public class Gun : MonoBehaviour {
 
     [SerializeField] protected Animator animator;
 
-    protected const string TRIGGER_PULLED_BOOL = "Trigger";
-    protected const string SHOOT_ANIMATION = "Shoot";
+    protected const string TRIGGER_BOOL = "Trigger";
+    protected const string SHOOT_TRIGGER = "Shoot";
     
 
 

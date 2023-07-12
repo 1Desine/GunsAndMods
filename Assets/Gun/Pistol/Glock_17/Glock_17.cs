@@ -20,7 +20,7 @@ public class Glock_17 : Gun {
 
 
         updateFunctions = () => {
-            animator.SetBool(TRIGGER_PULLED_BOOL, shootTriggerIsPulled);
+            animator.SetBool(TRIGGER_BOOL, shootTriggerIsPulled);
         };
     }
 
@@ -34,7 +34,7 @@ public class Glock_17 : Gun {
 
         Debug.DrawRay(barrelEndPoint.position, barrelEndPoint.forward * shootDistance, Color.red, 0.05f);
 
-        animator.Play(SHOOT_ANIMATION);
+        animator.SetTrigger(SHOOT_TRIGGER);
     }
     protected override void ManageAmmoAfterShot() {
         if(clipAmmo > 0) {

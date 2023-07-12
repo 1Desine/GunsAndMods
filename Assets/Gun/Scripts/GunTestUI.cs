@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GunTestUI : MonoBehaviour {
 
@@ -13,6 +14,9 @@ public class GunTestUI : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI clipSizeText;
     [SerializeField] private TextMeshProUGUI fireModText;
 
+    [SerializeField] private Button shootButton;
+    [SerializeField] private Button reloadButton;
+
 
     private void OnEnable() {
         gunControllerSO.OnClipSizeSet += GunControllerSO_OnClipSizeSet;
@@ -20,6 +24,8 @@ public class GunTestUI : MonoBehaviour {
         gunControllerSO.OnFiringModeChanged += GunControllerSO_OnFiringModeChanged;
         gunControllerSO.OnFireRateSet += GunControllerSO_OnFireRateSet;
     }
+
+
 
     private void GunControllerSO_OnFireRateSet(int obj) {
         firaRateText.text = obj.ToString();

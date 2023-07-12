@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [CreateAssetMenu()]
@@ -12,6 +13,7 @@ public class GunControllerSO : ScriptableObject {
     public bool changeFiringModeButtonDown;
 
 
+
     // Output for use
     public event Action<int> OnClipAmmoChanged;
     public event Action<int> OnClipSizeSet; 
@@ -21,7 +23,6 @@ public class GunControllerSO : ScriptableObject {
     // public event Action<Vector3> OnDefaultScopePositionSet;
     // public event Action<Vector3> OnScopeMountPositionSet;
 
-    
 
 
     public void FireRateSet(int fireRate) {
