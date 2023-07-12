@@ -17,7 +17,13 @@ public class Glock_17 : Gun {
 
     private void OnEnable() {
         SetValuesInGunController();
+
+
+        updateFunctions = () => {
+            animator.SetBool(TRIGGER_PULLED_BOOL, shootTriggerIsPulled);
+        };
     }
+
 
 
     protected override bool CanShoot() {
@@ -27,6 +33,8 @@ public class Glock_17 : Gun {
         float shootDistance = 100;
 
         Debug.DrawRay(barrelEndPoint.position, barrelEndPoint.forward * shootDistance, Color.red, 0.05f);
+
+        animator.Play(SHOOT_ANIMATION);
     }
     protected override void ManageAmmoAfterShot() {
         if(clipAmmo > 0) {

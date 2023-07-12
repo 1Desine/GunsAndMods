@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using static Gun;
 
 public class Gun : MonoBehaviour {
@@ -12,6 +13,16 @@ public class Gun : MonoBehaviour {
     [SerializeField] protected Transform defaultScopePosition;
     [SerializeField] protected Transform attachedScopePosition;
 
+    [SerializeField] protected Animator animator;
+
+    protected const string TRIGGER_PULLED_BOOL = "Trigger";
+    protected const string SHOOT_ANIMATION = "Shoot";
+    
+
+
+
+    protected delegate void UpdateFunctions();
+    protected UpdateFunctions updateFunctions;
 
 
     // Fire mode
@@ -38,7 +49,7 @@ public class Gun : MonoBehaviour {
     protected bool shellIsLoaded = true;
 
     // Shooting
-    private bool shootTriggerIsPulled;
+    protected bool shootTriggerIsPulled;
     protected float lastShotTime;
 
     // Reload
@@ -52,6 +63,8 @@ public class Gun : MonoBehaviour {
         ManageReloading(gunControllerSO.reloadButtonDown);
 
         ManageFireModeChanging(gunControllerSO.changeFiringModeButtonDown);
+
+        updateFunctions();
     }
 
 

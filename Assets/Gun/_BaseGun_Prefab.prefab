@@ -9,9 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2249398153175960809}
+  - component: {fileID: -7389425273643591878}
   - component: {fileID: 6069363457081361196}
   m_Layer: 0
-  m_Name: _BaseGun
+  m_Name: _BaseGun_Prefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -36,6 +37,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &-7389425273643591878
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 455006688805945371}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!114 &6069363457081361196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52,6 +73,7 @@ MonoBehaviour:
   barrelEndPoint: {fileID: 2828902300907816889}
   defaultScopePosition: {fileID: 5295499804410002202}
   attachedScopePosition: {fileID: 5720092610182574577}
+  animator: {fileID: 0}
 --- !u!1 &552340952458189691
 GameObject:
   m_ObjectHideFlags: 0
