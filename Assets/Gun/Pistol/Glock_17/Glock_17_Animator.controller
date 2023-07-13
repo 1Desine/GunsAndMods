@@ -108,7 +108,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Trigger
+  m_Name: Trigger_pulled
   m_Speed: 100
   m_CycleOffset: 0
   m_Transitions:
@@ -304,7 +304,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Idle
+  m_Name: Trigger_idle
   m_Speed: 100
   m_CycleOffset: 0
   m_Transitions:

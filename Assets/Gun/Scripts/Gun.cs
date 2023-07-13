@@ -17,12 +17,9 @@ public class Gun : MonoBehaviour {
 
     protected const string TRIGGER_BOOL = "Trigger";
     protected const string SHOOT_TRIGGER = "Shoot";
-    
 
 
 
-    protected delegate void UpdateFunctions();
-    protected UpdateFunctions updateFunctions;
 
 
     // Fire mode
@@ -55,16 +52,15 @@ public class Gun : MonoBehaviour {
     // Reload
     private bool reloadButtonIsPushedIn;
 
-    
+
 
     private void Update() {
         ManageShooting(gunControllerSO.shootButtonDown);
-
         ManageReloading(gunControllerSO.reloadButtonDown);
-
         ManageFireModeChanging(gunControllerSO.changeFiringModeButtonDown);
 
-        updateFunctions();
+        // trigger pushed or not? VISUAL
+        animator.SetBool(TRIGGER_BOOL, shootTriggerIsPulled);
     }
 
 
@@ -106,11 +102,17 @@ public class Gun : MonoBehaviour {
 
         shootTriggerIsPulled = shootButtonDown;
     }
+
     private IEnumerator ShootingCoroutine(int amountOfShots, float burstFireRate) {
-        if(CanShoot()) Shoot();
-        lastShotTime = Time.time;
-        ManageAmmoAfterShot();
-        gunControllerSO.ClipAmmoChanged(clipAmmo);
+        if(CanShoot()) {
+            Shoot();
+            lastShotTime = Time.time;
+
+            animator.SetTrigger(SHOOT_TRIGGER);
+
+            ManageAmmoAfterShot();
+            gunControllerSO.ClipAmmoChanged(clipAmmo);
+        }
 
         amountOfShots--;
         if(amountOfShots > 0) {
